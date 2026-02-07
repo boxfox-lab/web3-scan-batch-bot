@@ -6,7 +6,10 @@
   "scripts": {
     "dev": "ts-node -r tsconfig-paths/register src/index.ts",
     "build": "tsc -p tsconfig.json && tsc-alias -p tsconfig.json",
-    "start": "node dist/src/index.js",
+    "prebuild:new": "rimraf dist-new",
+    "build:new": "tsc -p tsconfig.json --outDir dist-new && tsc-alias -p tsconfig.json --dir dist-new",
+    "deploy": "node scripts/deploy.js",
+    "start": "yarn build && pm2 start ecosystem.config.js",
     "test": "jest --config jest.config.js",
     "lint": "eslint --quiet \"**/*.ts\""
   },
@@ -20,6 +23,7 @@
     "firebase-admin": "^12.0.0",
     "lodash": "^4.17.21",
     "openai": "^4.0.0",
+    "rimraf": "3.0.2",
     "typeorm": "^0.3.20",
     "typeorm-encrypted-column": "^0.0.4",
     "uuid": "^9.0.0",

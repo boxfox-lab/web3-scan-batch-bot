@@ -33,6 +33,11 @@ pipeline {
                 """
             }
         }
+        stage('Deployment') {
+            steps {
+                sh 'yarn deploy'
+            }
+        }
     }
     post {
         failure {

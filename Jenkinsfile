@@ -11,17 +11,17 @@ pipeline {
         }
         stage('Install Dependencies') {
             steps {
-                sh 'yarn install'
+                sh 'npm ci'
             }
         }
         stage('Unit & E2E Tests') {
             steps {
-                sh 'yarn test'
+                sh 'npm test'
             }
         }
         stage('Build Check') {
             steps {
-                sh 'yarn build'
+                sh 'npm run build'
             }
         }
         stage('Discord QA Notification') {
@@ -35,7 +35,7 @@ pipeline {
         }
         stage('Deployment') {
             steps {
-                sh 'yarn deploy'
+                sh 'npm run deploy'
             }
         }
     }

@@ -28,7 +28,7 @@ pipeline {
             steps {
                 sh """
                     curl -X POST -H "Content-Type: application/json" \
-                    -d '{"content": "🚀 **${env.JOB_NAME}** (cocoscan-batch-bot) build #${env.BUILD_NUMBER} successful! \\nCheck it out: ${env.BUILD_URL}"}' \
+                    -d '{"content": "🚀 **${env.JOB_NAME}** (web3-scan-batch-bot) build #${env.BUILD_NUMBER} successful! \\nCheck it out: ${env.BUILD_URL}"}' \
                     ${env.DISCORD_WEBHOOK}
                 """
             }
@@ -38,7 +38,7 @@ pipeline {
         failure {
             sh """
                 curl -X POST -H "Content-Type: application/json" \
-                -d '{"content": "❌ **${env.JOB_NAME}** (cocoscan-batch-bot) build #${env.BUILD_NUMBER} failed! \\nLogs: ${env.BUILD_URL}console"}' \
+                -d '{"content": "❌ **${env.JOB_NAME}** (web3-scan-batch-bot) build #${env.BUILD_NUMBER} failed! \\nLogs: ${env.BUILD_URL}console"}' \
                 ${env.DISCORD_WEBHOOK}
             """
         }

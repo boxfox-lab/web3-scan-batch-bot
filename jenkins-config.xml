@@ -28,57 +28,45 @@
   <disabled>false</disabled>
   <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
   <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
-  <triggers>
-    <hudson.triggers.SCMTrigger>
-      <spec>H/5 * * * *</spec>
-      <ignorePostCommitHooks>false</ignorePostCommitHooks>
-    </hudson.triggers.SCMTrigger>
-  </triggers>
+  <triggers/>
   <concurrentBuild>false</concurrentBuild>
   <builders>
     <hudson.tasks.Shell>
       <command>#!/bin/bash
 set -e
 
-# NVM 초기화
-export NVM_DIR="/opt/nvm"
-source "$NVM_DIR/nvm.sh"
-nvm use 21
-
 echo "========================================="
 echo "🔧 Step 1: Install Dependencies"
 echo "========================================="
-yarn install --frozen-lockfile
+npm ci
 
 echo ""
 echo "========================================="
 echo "🧪 Step 2: Run Tests"
 echo "========================================="
-yarn test
+npm test
 
 echo ""
 echo "========================================="
 echo "🏗️ Step 3: Build"
 echo "========================================="
-yarn build
+npm run build
 
 echo ""
 echo "========================================="
 echo "✅ Step 4: Build Success - QA Notification"
 echo "========================================="
-if [ -n "$DISCORD_DEV_WEBHOOK_URL" ]; then
-  curl -X POST -H "Content-Type: application/json" \
-    -d "{\"content\": \"🚀 **${JOB_NAME}** (web3-scan-batch-bot) build #${BUILD_NUMBER} successful! \\nCheck it out: ${BUILD_URL}\"}" \
-    ${DISCORD_DEV_WEBHOOK_URL}
-else
-  echo "⚠️ DISCORD_DEV_WEBHOOK_URL not set, skipping notification"
-fi
+DISCORD_WEBHOOK="https://discord.com/api/webhooks/1468444406016118816/wz2J3kLDcNAo1FjJpdH-R7ly4NItzjv70K6L_iWBLzwULqTUcjN8lmZbpCJx_zB6_A9R"
+
+curl -X POST -H "Content-Type: application/json" \
+  -d "{\"content\": \"🚀 **${JOB_NAME}** (web3-scan-batch-bot) build #${BUILD_NUMBER} successful! \\nCheck it out: ${BUILD_URL}\"}" \
+  ${DISCORD_WEBHOOK}
 
 echo ""
 echo "========================================="
 echo "🚀 Step 5: Deploy"
 echo "========================================="
-yarn deploy
+npm run deploy
 
 echo ""
 echo "========================================="

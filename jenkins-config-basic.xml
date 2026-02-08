@@ -1,0 +1,80 @@
+<?xml version='1.1' encoding='UTF-8'?>
+<project>
+  <description>Web3 Scan 배치 작업 (YouTube 요약, Gemini 이미지 생성)</description>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <com.coravy.hudson.plugins.github.GithubProjectProperty plugin="github@1.37.0">
+      <projectUrl>https://github.com/boxfox-lab/cocoscan-batch-bot/</projectUrl>
+      <displayName></displayName>
+    </com.coravy.hudson.plugins.github.GithubProjectProperty>
+  </properties>
+  <scm class="hudson.plugins.git.GitSCM" plugin="git@5.0.0">
+    <configVersion>2</configVersion>
+    <userRemoteConfigs>
+      <hudson.plugins.git.UserRemoteConfig>
+        <url>https://github.com/boxfox-lab/cocoscan-batch-bot.git</url>
+      </hudson.plugins.git.UserRemoteConfig>
+    </userRemoteConfigs>
+    <branches>
+      <hudson.plugins.git.BranchSpec>
+        <name>*/main</name>
+      </hudson.plugins.git.BranchSpec>
+    </branches>
+    <doGenerateSubmoduleConfigurations>false</doGenerateSubmoduleConfigurations>
+    <submoduleCfg class="empty-list"/>
+    <extensions/>
+  </scm>
+  <canRoam>true</canRoam>
+  <disabled>false</disabled>
+  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <triggers/>
+  <concurrentBuild>false</concurrentBuild>
+  <builders>
+    <hudson.tasks.Shell>
+      <command>#!/bin/bash
+set -e
+
+echo "========================================="
+echo "🔧 Step 1: Install Dependencies"
+echo "========================================="
+npm ci
+
+echo ""
+echo "========================================="
+echo "🧪 Step 2: Run Tests"
+echo "========================================="
+npm test
+
+echo ""
+echo "========================================="
+echo "🏗️ Step 3: Build"
+echo "========================================="
+npm run build
+
+echo ""
+echo "========================================="
+echo "✅ Step 4: Build Success - QA Notification"
+echo "========================================="
+DISCORD_WEBHOOK="https://discord.com/api/webhooks/1468444406016118816/wz2J3kLDcNAo1FjJpdH-R7ly4NItzjv70K6L_iWBLzwULqTUcjN8lmZbpCJx_zB6_A9R"
+
+curl -X POST -H "Content-Type: application/json" \
+  -d "{\"content\": \"🚀 **${JOB_NAME}** (web3-scan-batch-bot) build #${BUILD_NUMBER} successful! \\nCheck it out: ${BUILD_URL}\"}" \
+  ${DISCORD_WEBHOOK}
+
+echo ""
+echo "========================================="
+echo "🚀 Step 5: Deploy"
+echo "========================================="
+npm run deploy
+
+echo ""
+echo "========================================="
+echo "✨ All Steps Completed!"
+echo "========================================="</command>
+      <configuredLocalRules/>
+    </hudson.tasks.Shell>
+  </builders>
+  <publishers/>
+  <buildWrappers/>
+</project>

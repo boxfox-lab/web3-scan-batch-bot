@@ -3,19 +3,21 @@ import { ArkhamPortfolioService } from './arkham-portfolio.service';
 import {
   ARKHAM_ENTITIES,
   CHUNK_SIZE,
-  SCRAPING_HOST,
   buildArkhamEntityUrl,
   buildScrapingScript,
 } from './arkham-portfolio.constants';
+import { ScrapingUrlService } from '../../config/scraping-url.service';
 
 jest.mock('axios');
 
 describe('ArkhamPortfolioService', () => {
   let service: ArkhamPortfolioService;
+  let scrapingUrlService: ScrapingUrlService;
   const mockedAxios = axios as jest.Mocked<typeof axios>;
 
   // 테스트 데이터 상수
   const MOCK_ENTITY = 'test-entity';
+  const MOCK_SCRAPING_HOST = 'https://test.ngrok-free.app/scraping/run';
   const MOCK_SUCCESS_RESPONSE = {
     status: 200,
     data: { success: true },
@@ -23,7 +25,9 @@ describe('ArkhamPortfolioService', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    service = new ArkhamPortfolioService();
+    scrapingUrlService = new ScrapingUrlService();
+    jest.spyOn(scrapingUrlService, 'getScrapingUrl').mockResolvedValue(MOCK_SCRAPING_HOST);
+    service = new ArkhamPortfolioService(scrapingUrlService);
   });
 
   afterEach(() => {
@@ -46,7 +50,7 @@ describe('ArkhamPortfolioService', () => {
         // 각 엔티티에 대해 올바른 URL과 스크립트로 호출되었는지 확인
         ARKHAM_ENTITIES.forEach((entity) => {
           expect(mockedAxios.post).toHaveBeenCalledWith(
-            SCRAPING_HOST,
+            MOCK_SCRAPING_HOST,
             {
               url: buildArkhamEntityUrl(entity),
               script: buildScrapingScript(),
@@ -68,7 +72,7 @@ describe('ArkhamPortfolioService', () => {
         // 첫 번째 청크의 모든 엔티티가 처리되었는지 확인
         firstChunk.forEach((entity) => {
           expect(mockedAxios.post).toHaveBeenCalledWith(
-            SCRAPING_HOST,
+            MOCK_SCRAPING_HOST,
             expect.objectContaining({
               url: buildArkhamEntityUrl(entity),
             }),
@@ -140,7 +144,7 @@ describe('ArkhamPortfolioService', () => {
         // Assert
         expect(mockedAxios.post).toHaveBeenCalledTimes(1);
         expect(mockedAxios.post).toHaveBeenCalledWith(
-          SCRAPING_HOST,
+          MOCK_SCRAPING_HOST,
           {
             url: buildArkhamEntityUrl('single-entity'),
             script: buildScrapingScript(),
@@ -489,7 +493,7 @@ describe('ArkhamPortfolioService', () => {
 
         // Assert
         expect(mockedAxios.post).toHaveBeenCalledWith(
-          SCRAPING_HOST,
+          MOCK_SCRAPING_HOST,
           {
             url: expectedUrl,
             script: buildScrapingScript(),

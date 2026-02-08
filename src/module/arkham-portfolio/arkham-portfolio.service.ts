@@ -2,16 +2,18 @@ import axios from 'axios';
 import {
   ARKHAM_ENTITIES,
   CHUNK_SIZE,
-  SCRAPING_HOST,
   buildArkhamEntityUrl,
   buildScrapingScript,
 } from './arkham-portfolio.constants';
 import { sendDiscordMessage } from '../../remotes/discord/sendDiscordMessage';
+import { ScrapingUrlService } from '../../config/scraping-url.service';
 
 export class ArkhamPortfolioService {
   private readonly REQUEST_TIMEOUT = 60000; // 60초
   private readonly DISCORD_WEBHOOK_URL =
     process.env.DISCORD_DEV_WEBHOOK_URL || '';
+
+  constructor(private scrapingUrlService: ScrapingUrlService) {}
 
   async process() {
     const startTime = new Date();
@@ -61,10 +63,11 @@ export class ArkhamPortfolioService {
     entity: string,
   ): Promise<{ success: boolean; error?: string }> {
     const url = buildArkhamEntityUrl(entity);
+    const scrapingHost = await this.scrapingUrlService.getScrapingUrl();
 
     try {
       const response = await axios.post(
-        SCRAPING_HOST,
+        scrapingHost,
         {
           url,
           script: buildScrapingScript(),

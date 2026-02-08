@@ -1,8 +1,10 @@
 import { ArkhamPortfolioService } from './module/arkham-portfolio';
+import { ScrapingUrlService } from './config/scraping-url.service';
 import { startJob } from './util/startJob';
 
 export function createArkhamPortfolioBatchBot() {
-  const service = new ArkhamPortfolioService();
+  const scrapingUrlService = new ScrapingUrlService();
+  const service = new ArkhamPortfolioService(scrapingUrlService);
 
   return async function start() {
     await startJob(

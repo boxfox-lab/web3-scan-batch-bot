@@ -1,5 +1,3 @@
-export const SCRAPING_HOST = 'https://13c62c3ee687.ngrok-free.app/scraping/run';
-
 export const CHUNK_SIZE = 5;
 
 export const ARKHAM_ENTITIES = [

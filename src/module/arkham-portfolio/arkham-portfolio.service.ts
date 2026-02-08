@@ -81,8 +81,16 @@ export class ArkhamPortfolioService {
 
       return { success: true };
     } catch (error) {
-      const errorMessage =
-        error instanceof Error ? error.message : String(error);
+      let errorMessage: string;
+      if (error && typeof error === 'object' && 'response' in error) {
+        // axios 에러
+        const axiosError = error as any;
+        errorMessage = axiosError.response?.statusText || axiosError.message || String(error);
+      } else if (error instanceof Error) {
+        errorMessage = error.message;
+      } else {
+        errorMessage = String(error);
+      }
       console.error(`[Arkham Portfolio] ${entity} 실패:`, errorMessage);
 
       // 실패 알람

@@ -17,10 +17,10 @@ process.on("unhandledRejection", async (reason, promise) => {
 
 async function main() {
   try {
-    const start1 = createWeb3ScanBatchBot();
+    // const start1 = createWeb3ScanBatchBot();
     const start2 = createArkhamPortfolioBatchBot();
     await Promise.all([
-      start1(), // web3-scan 영상 요약, Gemini 이미지 생성
+      // start1(), // web3-scan 영상 요약, Gemini 이미지 생성 (임시 비활성화)
       start2(), // arkham-portfolio 스크래핑
     ]);
   } catch (error) {

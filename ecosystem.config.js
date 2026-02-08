@@ -1,6 +1,9 @@
 const path = require("path");
 require("dotenv").config({ path: path.join(__dirname, ".env") });
 
+// DB의 ngrok URL을 사용하기 위해 .env의 SCRAPING_LOCAL_URL 제거
+delete process.env.SCRAPING_LOCAL_URL;
+
 module.exports = [
   {
     script: "dist/src/index.js",
@@ -25,6 +28,8 @@ module.exports = [
       GOOGLE_SEARCH_API_KEY: process.env.GOOGLE_SEARCH_API_KEY,
       GOOGLE_SEARCH_ENGINE_ID: process.env.GOOGLE_SEARCH_ENGINE_ID,
       DISCORD_DEV_WEBHOOK_URL: process.env.DISCORD_DEV_WEBHOOK_URL,
+      WEB3_SCAN_BACKEND_URL: process.env.WEB3_SCAN_BACKEND_URL || 'https://api.compounding.co.kr/web3-scan',
+      // SCRAPING_LOCAL_URL: .env 파일에서 delete로 제거됨 (DB ngrok URL 사용)
     },
   },
 ];

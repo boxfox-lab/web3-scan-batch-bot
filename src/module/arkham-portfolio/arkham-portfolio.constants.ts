@@ -23,9 +23,9 @@ export const ARKHAM_ENTITIES = [
   'robinhood',
   'coinbase',
   'microstrategy',
-] as const;
+];
 
-export type ArkhamEntity = typeof ARKHAM_ENTITIES[number];
+export type ArkhamEntity = (typeof ARKHAM_ENTITIES)[number];
 
 export function buildArkhamEntityUrl(entity: string): string {
   return `https://intel.arkm.com/explorer/entity/${entity}`;

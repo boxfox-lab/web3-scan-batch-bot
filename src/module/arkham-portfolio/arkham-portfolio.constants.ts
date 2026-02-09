@@ -1,4 +1,4 @@
-export const CHUNK_SIZE = 5;
+export const CHUNK_SIZE = 3;
 
 export const ARKHAM_ENTITIES = [
   'usg',

@@ -21,6 +21,11 @@ export const ARKHAM_ENTITIES = [
   'robinhood',
   'coinbase',
   'microstrategy',
+  'kraken',
+  'bitfinex',
+  'okx',
+  'bybit',
+  'gemini',
 ];
 
 export type ArkhamEntity = (typeof ARKHAM_ENTITIES)[number];

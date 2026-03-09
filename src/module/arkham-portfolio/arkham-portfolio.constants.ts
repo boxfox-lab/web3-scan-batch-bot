@@ -26,6 +26,8 @@ export const ARKHAM_ENTITIES = [
   'okx',
   'bybit',
   'gemini',
+  'tesla',
+  'marathon-digital',
 ];
 
 export type ArkhamEntity = (typeof ARKHAM_ENTITIES)[number];

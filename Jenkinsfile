@@ -21,7 +21,7 @@ pipeline {
         }
         stage('Build Check') {
             steps {
-                sh 'npm run build'
+                sh 'rm -rf dist && npm run build'
             }
         }
         stage('Discord QA Notification') {

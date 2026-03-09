@@ -32,6 +32,14 @@ export const ARKHAM_ENTITIES = [
 
 export type ArkhamEntity = (typeof ARKHAM_ENTITIES)[number];
 
+/**
+ * Arkham entity 이름을 프론트엔드 holder 이름으로 매핑
+ * Arkham URL slug와 프론트엔드 slug가 다른 경우에만 추가
+ */
+export const HOLDER_MAPPING: Record<string, string> = {
+  'marathon-digital': 'marathon',
+};
+
 export function buildArkhamEntityUrl(entity: string): string {
   return `https://intel.arkm.com/explorer/entity/${entity}`;
 }
@@ -44,7 +52,13 @@ export function buildArkhamEntityUrl(entity: string): string {
  * 추출 후 https://api.compounding.co.kr/web3-scan/portfolios 로 100개씩 청크 전송.
  */
 export function buildScrapingScript(): string {
+  // 매핑 데이터를 JSON으로 직렬화하여 스크립트에 주입
+  const holderMappingJson = JSON.stringify(HOLDER_MAPPING);
+
   return `(async (bridge) => {
+    // --- 0. Holder 매핑 데이터 ---
+    const HOLDER_MAPPING = ${holderMappingJson};
+
     // --- 1. 유틸리티 함수 정의 ---
 
     /**
@@ -68,12 +82,15 @@ export function buildScrapingScript(): string {
     }
 
     /**
-     * 현재 URL에서 마지막 경로 세그먼트를 추출하여 holder로 사용합니다.
+     * 현재 URL에서 마지막 경로 세그먼트를 추출하고,
+     * 매핑 테이블에 있으면 변환된 이름을 반환합니다.
      */
     function getHolderFromUrl() {
         const path = window.location.pathname;
         const segments = path.split('/').filter(s => s.length > 0);
-        return segments.pop() || 'unknown_holder';
+        const arkhamEntity = segments.pop() || 'unknown_holder';
+        // 매핑이 있으면 변환, 없으면 원본 사용
+        return HOLDER_MAPPING[arkhamEntity] || arkhamEntity;
     }
 
     /**
